@@ -1,5 +1,7 @@
 use async_graphql::{ Object, Context};
 
+use crate::api::service::{StockService, StockServiceTrait};
+
 #[derive(Default)]
 pub struct  StockQuery {}
 
@@ -12,11 +14,12 @@ impl StockQuery {
 		println!("get_stock_by_symbol called!");
 		// StockService::get_stock_by_symbol(self, "symbol");
 		// StockService::new()
+		Stockser::new(db).get_stock_by_symbol("symbol)");
 		"get_stock_by_symbol called!".to_string()
 	}
-	async fn get_stock_list_held(&self, ctx: &Context<'_>) -> String {
-		println!("get_stock_list_held called!");
-		"get_stock_list_held called!".to_string()
+	async fn get_stock_list_ordered(&self, ctx: &Context<'_>) -> String {
+		println!("get_stock_list_ordered called!");
+		"get_stock_list_ordered called!".to_string()
 	}
 }
 

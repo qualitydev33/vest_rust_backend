@@ -3,12 +3,18 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "post")]
+#[sea_orm(table_name = "event_entity")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub title: String,
-    pub text: String,
+    pub topic: String,
+    pub partition: i32,
+    pub key: String,
+    pub payload: String,
+    pub trace_id: String,
+    pub event_type: String,
+    pub created_at: DateTime,
+    pub deleted_at: DateTime,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

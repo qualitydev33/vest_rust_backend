@@ -24,6 +24,10 @@ sea-orm-cli migrate init
 ```
 export DATABASE_URL='sqlite://posts.sqlite?mode=rwc'
 ```
+* Create new migration
+```
+sea-orm-cli migrate generate <migration_name>
+```
 * We will run the migration.
 ```
 sea-orm-cli migrate up
