@@ -1,9 +1,17 @@
-use std::error::Error;
-use std::sync::Arc;
+use std::{
+    error::Error,
+    sync::Arc,
+    thread, time::Duration
+};
 use anyhow::Result;
 use dotenv::dotenv;
 use axum::{Router, Server, routing::get, extract::Extension};
 use tower_http::trace::{self, TraceLayer};
+use rdkafka::{
+    ClientConfig,
+    consumer::{BaseConsumer, Consumer, StreamConsumer},
+    producer::{BaseProducer, BaseRecord}
+};
 
 mod api;
 use api::lib::AppContext;
@@ -14,8 +22,37 @@ use crate::api::graphql::{create_schema, graphiql, graphql_handler};
 async fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok();
     let port = std::env::var("PORT").expect("You've not set the port.");
+    let kafka_port = std::env::var("KAFKA_PORT").expect("You've not set the kafka port");
     let database_url = std::env::var("DATABASE_URL").expect("You've not set the Database url.");
-    
+
+    let producer: BaseProducer = ClientConfig::new()
+        .set("bootstrap.servers", format!("localhost:{}", kafka_port))
+        .create()
+        .expect("Invalid producer config");
+
+    for i in 1..10 {
+        println!("sending message");
+
+        producer
+            .send(
+                BaseRecord::to("buy-sell-stock")
+                    .key(&format!("key-{}", i))
+                    .payload(&format!("value-{}", i)),
+            )
+            .expect("failed to send message");
+
+        thread::sleep(Duration::from_secs(3));
+    }
+
+    let consumer: StreamConsumer = ClientConfig::new()
+        .set("bootstrap.servers", format!("localhost:{}", kafka_port))
+        .set("group.id", "my_consumer_group")
+        .create()?;
+    consumer
+        .subscribe(&["buy-sell-stock"])
+        .expect("topic subscribe failed");
+
+
     let ctx = Arc::new(AppContext::init(&database_url).await?);
     let schema = create_schema(ctx.clone())?;
     
