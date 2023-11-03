@@ -1,4 +1,4 @@
-# Rust Test Project
+# Rust Backend
 
 ## Feature
 * Normalized the error object with the AppError struct
