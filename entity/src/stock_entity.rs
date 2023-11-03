@@ -4,12 +4,12 @@ use sea_orm::entity::prelude::*;
 use async_graphql::SimpleObject;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, SimpleObject, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Deserialize, Serialize, SimpleObject)]
 #[sea_orm(table_name = "stock_entity")]
 #[graphql(name = "StockEntity")]
 pub struct Model {
-    #[sea_orm(primary_key)]
-    pub id: i32,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub id: Uuid,
     pub symbol: String,
     pub exchange: String,
     pub company_name: String,
@@ -21,7 +21,7 @@ pub struct Model {
     pub market_status: String,
     pub asset_class: String,
     pub created_at: DateTime,
-    pub deleted_at: DateTime,
+    pub deleted_at: Option<DateTime>,
 }
 
 pub type StockEntity = Model;

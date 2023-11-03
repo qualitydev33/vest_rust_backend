@@ -1,4 +1,12 @@
 # Rust Test Project
+
+## Feature
+* Normalized the error object with the AppError struct
+* Normalized the response object with the AppResponse struct
+* Normalized the api handler and db operation with the Resolover and Service traits
+* Passed some configurations such as the db connection, as global variable
+* Normalized the event driven architecture for kafka and websocket and so on for future development
+
 ## Build
 * Simple build
 
@@ -9,6 +17,7 @@ cargo build
 ```
 cargo install cargo-watch
 cargo watch -x build
+cargo watch -x run
 ```
 
 ## Installing sea-orm-cli and Migration
@@ -59,13 +68,25 @@ Download kafka and install on your machine. Please follow kafka [quickstart](htt
 ```
 * Create topic
 ```
-./kafka-topics.bat --create --bootstrap-server localhost:9092 --topic test
+./kafka-topics.bat --create --bootstrap-server localhost:9092 --topic users.registrations
 ```
 * Run the producer
 ```
-./kafka-console-producer.bat --broker-list localhost:9092 --topic test
+./kafka-console-producer.bat --broker-list localhost:9092 --topic users.registrations
 ```
 * Run the consumer
 ```
-./kafka-console-consumer.bat --topic test --bootstrap-server localhost:9092 --from-beginning
+./kafka-console-consumer.bat --topic users.registrations --bootstrap-server localhost:9092 --from-beginning
+```
+* List all topics
+```
+./kafka-topics.sh --bootstrap-server=localhost:9092 --list
+```
+or
+```
+./kafka-topics.sh --list --zookeeper localhost:2181
+```
+* Topic details
+```
+./bin/kafka-topics.sh --bootstrap-server=localhost:9092 --describe --topic users.registrations
 ```

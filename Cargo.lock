@@ -217,6 +217,7 @@ dependencies = [
  "async-trait",
  "base64 0.13.1",
  "bytes",
+ "chrono",
  "fast_chemail",
  "fnv",
  "futures-channel",
@@ -224,7 +225,7 @@ dependencies = [
  "futures-util",
  "handlebars",
  "http",
- "indexmap 2.0.2",
+ "indexmap",
  "lru",
  "mime",
  "multer",
@@ -238,6 +239,8 @@ dependencies = [
  "static_assertions",
  "tempfile",
  "thiserror",
+ "uuid 0.8.2",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -288,29 +291,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "async-graphql-poem"
-version = "6.0.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6ac810d915720234f4e17a57b6e99fd610db71dfee8b3794cee820eecb277a2"
-dependencies = [
- "async-graphql",
- "futures-util",
- "mime",
- "poem",
- "serde_json",
- "tokio",
- "tokio-stream",
- "tokio-util",
-]
-
-[[package]]
 name = "async-graphql-value"
 version = "6.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2270df3a642efce860ed06fbcf61fc6db10f83c2ecb5613127fb453c82e012a4"
 dependencies = [
  "bytes",
- "indexmap 2.0.2",
+ "indexmap",
  "serde",
  "serde_json",
 ]
@@ -706,8 +693,10 @@ checksum = "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-targets",
 ]
 
@@ -959,8 +948,11 @@ dependencies = [
 name = "entity"
 version = "0.1.0"
 dependencies = [
+ "async-graphql",
+ "chrono",
  "sea-orm",
  "serde",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -1236,25 +1228,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "h2"
-version = "0.3.21"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91fc23aa11be92976ef4729127f1a74adf36d8436f7816b185d18df956790833"
-dependencies = [
- "bytes",
- "fnv",
- "futures-core",
- "futures-sink",
- "futures-util",
- "http",
- "indexmap 1.9.3",
- "slab",
- "tokio",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
 name = "handlebars"
 version = "4.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1418,7 +1391,6 @@ dependencies = [
  "futures-channel",
  "futures-core",
  "futures-util",
- "h2",
  "http",
  "http-body",
  "httparse",
@@ -1469,16 +1441,6 @@ checksum = "7d20d6b07bfbc108882d88ed8e37d39636dcc260e15e30c45e6ba089610b917c"
 dependencies = [
  "unicode-bidi",
  "unicode-normalization",
-]
-
-[[package]]
-name = "indexmap"
-version = "1.9.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd070e393353796e801d209ad339e89596eb4c8d430d18ede6a1cced8fafbd99"
-dependencies = [
- "autocfg",
- "hashbrown 0.12.3",
 ]
 
 [[package]]
@@ -1677,6 +1639,8 @@ version = "0.1.0"
 dependencies = [
  "async-std",
  "sea-orm-migration",
+ "serde",
+ "serde_yaml",
 ]
 
 [[package]]
@@ -2043,49 +2007,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "26072860ba924cbfa98ea39c8c19b4dd6a4a25423dbdf219c1eca91aa0cf6964"
 
 [[package]]
-name = "poem"
-version = "1.3.58"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebc7ae19f3e791ae8108b08801abb3708d64d3a16490c720e0b81040cae87b5d"
-dependencies = [
- "async-trait",
- "base64 0.21.5",
- "bytes",
- "futures-util",
- "headers",
- "http",
- "hyper",
- "mime",
- "parking_lot",
- "percent-encoding",
- "pin-project-lite",
- "poem-derive",
- "regex",
- "rfc7239",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "smallvec",
- "thiserror",
- "tokio",
- "tokio-tungstenite",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
-name = "poem-derive"
-version = "1.3.58"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2550a0bce7273b278894ef3ccc5a6869e7031b6870042f3cc6826ed9faa980a6"
-dependencies = [
- "proc-macro-crate 1.3.1",
- "proc-macro2",
- "quote",
- "syn 2.0.38",
-]
-
-[[package]]
 name = "polling"
 version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2324,15 +2245,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rfc7239"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "087317b3cf7eb481f13bd9025d729324b7cd068d6f470e2d76d049e191f5ba47"
-dependencies = [
- "uncased",
-]
-
-[[package]]
 name = "ring"
 version = "0.17.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2360,7 +2272,7 @@ dependencies = [
  "rkyv_derive",
  "seahash",
  "tinyvec",
- "uuid",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -2539,7 +2451,7 @@ dependencies = [
  "time",
  "tracing",
  "url",
- "uuid",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -2605,7 +2517,7 @@ dependencies = [
  "sea-query-derive",
  "serde_json",
  "time",
- "uuid",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -2621,7 +2533,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "time",
- "uuid",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -2688,9 +2600,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.107"
+version = "1.0.108"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b420ce6e3d8bd882e9b243c6eed35dbc9a6110c9769e74b584e0d68d1f20c65"
+checksum = "3d1c7e3eac408d115102c4c24ad393e0821bb3a5df4d506a80f85f7a742a526b"
 dependencies = [
  "itoa",
  "ryu",
@@ -2717,6 +2629,19 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "serde_yaml"
+version = "0.9.27"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3cc7a1570e38322cfe4154732e5110f887ea57e22b76f4bfd32b5bdd3368666c"
+dependencies = [
+ "indexmap",
+ "itoa",
+ "ryu",
+ "serde",
+ "unsafe-libyaml",
 ]
 
 [[package]]
@@ -2883,7 +2808,7 @@ dependencies = [
  "futures-util",
  "hashlink",
  "hex",
- "indexmap 2.0.2",
+ "indexmap",
  "log",
  "memchr",
  "once_cell",
@@ -2903,7 +2828,7 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
- "uuid",
+ "uuid 1.5.0",
  "webpki-roots",
 ]
 
@@ -2989,7 +2914,7 @@ dependencies = [
  "thiserror",
  "time",
  "tracing",
- "uuid",
+ "uuid 1.5.0",
  "whoami",
 ]
 
@@ -3034,7 +2959,7 @@ dependencies = [
  "thiserror",
  "time",
  "tracing",
- "uuid",
+ "uuid 1.5.0",
  "whoami",
 ]
 
@@ -3060,7 +2985,7 @@ dependencies = [
  "time",
  "tracing",
  "url",
- "uuid",
+ "uuid 1.5.0",
 ]
 
 [[package]]
@@ -3300,7 +3225,6 @@ dependencies = [
  "futures-sink",
  "pin-project-lite",
  "tokio",
- "tracing",
 ]
 
 [[package]]
@@ -3324,7 +3248,7 @@ version = "0.19.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b5bb770da30e5cbfde35a2d7b9b8a2c4b8ef89548a7a6aeab5c9a576e3e7421"
 dependencies = [
- "indexmap 2.0.2",
+ "indexmap",
  "toml_datetime",
  "winnow",
 ]
@@ -3503,6 +3427,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39ec24b3121d976906ece63c9daad25b85969647682eee313cb5779fdd69e14e"
 
 [[package]]
+name = "unsafe-libyaml"
+version = "0.2.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f28467d3e1d3c6586d8f25fa243f544f5800fec42d97032474e17222c2b75cfa"
+
+[[package]]
 name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3533,10 +3463,21 @@ checksum = "711b9620af191e0cdc7468a8d14e709c3dcdb115b36f838e601583af800a370a"
 
 [[package]]
 name = "uuid"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
+dependencies = [
+ "getrandom",
+ "serde",
+]
+
+[[package]]
+name = "uuid"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "88ad59a7560b41a70d191093a945f0b87bc1deeda46fb237479708a1d6b6cdfc"
 dependencies = [
+ "getrandom",
  "serde",
 ]
 
@@ -3565,18 +3506,16 @@ dependencies = [
  "anyhow",
  "async-graphql",
  "async-graphql-axum",
- "async-graphql-poem",
  "async-trait",
  "axum",
  "dotenv",
  "entity",
  "figment",
  "migration",
- "once_cell",
- "poem",
  "rdkafka",
  "sea-orm",
  "serde",
+ "serde_json",
  "tokio",
  "tower-http",
  "tracing",

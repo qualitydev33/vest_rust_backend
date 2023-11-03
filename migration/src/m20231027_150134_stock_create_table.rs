@@ -11,13 +11,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(StockEntity::Table)
                     .if_not_exists()
-                    .col(
-                        ColumnDef::new(StockEntity::Id)
-                            .integer()
-                            .not_null()
-                            .auto_increment()
-                            .primary_key(),
-                    )
+                    .col(ColumnDef::new(StockEntity::Id).uuid().not_null().primary_key())
                     .col(ColumnDef::new(StockEntity::Symbol).string().not_null())
                     .col(ColumnDef::new(StockEntity::Exchange).string().not_null())
                     .col(ColumnDef::new(StockEntity::CompanyName).string().not_null())
@@ -29,7 +23,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(StockEntity::MarketStatus).string().not_null())
                     .col(ColumnDef::new(StockEntity::AssetClass).string().not_null())
                     .col(ColumnDef::new(StockEntity::CreatedAt).timestamp().not_null())
-                    .col(ColumnDef::new(StockEntity::DeletedAt).timestamp().not_null())
+                    .col(ColumnDef::new(StockEntity::DeletedAt).timestamp())
                     .to_owned(),
             )
             .await

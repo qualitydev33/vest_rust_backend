@@ -11,18 +11,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(StockOrderEntity::Table)
                     .if_not_exists()
-                    .col(
-                        ColumnDef::new(StockOrderEntity::Id)
-                            .integer()
-                            .not_null()
-                            .auto_increment()
-                            .primary_key(),
-                    )
+                    .col(ColumnDef::new(StockOrderEntity::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(StockOrderEntity::Symbol).string().not_null())
                     .col(ColumnDef::new(StockOrderEntity::BidPrice).float().not_null())
                     .col(ColumnDef::new(StockOrderEntity::BidSize).integer().not_null())
                     .col(ColumnDef::new(StockOrderEntity::OrderType).string().not_null())
                     .col(ColumnDef::new(StockOrderEntity::CreatedAt).timestamp().not_null())
-                    .col(ColumnDef::new(StockOrderEntity::DeletedAt).timestamp().not_null())
+                    .col(ColumnDef::new(StockOrderEntity::DeletedAt).timestamp())
                     .to_owned(),
             )
             .await
@@ -39,6 +34,7 @@ impl MigrationTrait for Migration {
 enum StockOrderEntity {
     Table,
     Id,
+    Symbol,
     BidPrice,
     BidSize,
     OrderType,

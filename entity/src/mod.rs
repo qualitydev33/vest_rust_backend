@@ -2,6 +2,5 @@
 
 pub mod prelude;
 
-pub mod event_entity;
 pub mod stock_entity;
 pub mod stock_order_entity;

@@ -8,7 +8,6 @@ pub struct AppContext {
     /// The database connections
     pub db: Arc<DatabaseConnection>,
 
-	/// The `User` entity service
     pub stocks: Arc<dyn StockServiceTrait>,
 }
 
