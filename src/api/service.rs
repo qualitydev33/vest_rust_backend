@@ -7,7 +7,7 @@ use entity::{
 	stock_order_entity::{Model as StockOrderEntity, self, Entity as StockOrder}
 };
 
-use crate::{kafka::producer::use_producer, utils::errors::AppError};
+use crate::{kafka::producer::use_producer, utils::errors::AppError, external_api::nasdaq::get_nasdaq_stock_by_symbol};
 
 use super::resolver::StockOrderInput;
 
@@ -33,12 +33,14 @@ pub trait StockServiceTrait: Sync + Send {
 #[async_trait]
 impl StockServiceTrait for StockService {
 	async fn get_stock_by_symbol(&self, symbol: &str) -> Result<Option<StockEntity>> {
-		let result = stock_entity::Entity::find()
-			.filter(stock_entity::Column::Symbol.eq(symbol))
-			.one(&*self.db)
-			.await
-			.unwrap();
+		// let result = stock_entity::Entity::find()
+		// 	.filter(stock_entity::Column::Symbol.eq(symbol))
+		// 	.one(&*self.db)
+		// 	.await
+		// 	.unwrap();
+		let result = get_nasdaq_stock_by_symbol(symbol).await;
 		Ok(result)
+		
 	}
 	async fn get_stock_order_list(&self) -> Result<Vec<StockOrderEntity>> {
 		let result = stock_order_entity::Entity::find()
@@ -55,8 +57,7 @@ impl StockServiceTrait for StockService {
 		let delivery_result = use_producer(&topic, raw_data).await;
 		
 		match delivery_result {
-			Ok(value) => {
-				println!("value is {}", value.0);
+			Ok(_) => {
 				Ok(order_model)
 			},
 			Err(_) => {
