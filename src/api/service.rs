@@ -1,8 +1,15 @@
 use std::sync::Arc;
 use anyhow::Result;
 use async_trait::async_trait;
-use sea_orm::{DatabaseConnection, EntityTrait};
-use entity::stock::{Model as Stock, self};
+use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait};
+use entity::{
+	stock_entity::{Model as StockEntity, self}, 
+	stock_order_entity::{Model as StockOrderEntity, self, Entity as StockOrder}
+};
+
+use crate::{kafka::producer::use_producer, utils::errors::AppError};
+
+use super::resolver::StockOrderInput;
 
 pub struct StockService {
 	db: Arc<DatabaseConnection>,
@@ -16,50 +23,45 @@ impl StockService {
 
 #[async_trait]
 pub trait StockServiceTrait: Sync + Send {
-	async fn get_stock_by_symbol(&self, symbol: &str) -> Result<Option<Stock>>;
-	async fn buy_stock(&self) -> String;
-	async fn sell_stock(&self) -> String;
+	async fn get_stock_by_symbol(&self, symbol: &str) -> Result<Option<StockEntity>>;
+	async fn get_stock_order_list(&self) -> Result<Vec<StockOrderEntity>>;
+	async fn create_order(&self, payload: StockOrderInput, order_type: &str) -> Result<StockOrderEntity>;
 }
 
 
 
 #[async_trait]
 impl StockServiceTrait for StockService {
-	async fn get_stock_by_symbol(&self, symbol: &str) -> Result<Option<Stock>> {
-		println!("symbol is {}", symbol);
-		let result = stock::Entity::find_by_id(1).one(&*self.db).await?;
+	async fn get_stock_by_symbol(&self, symbol: &str) -> Result<Option<StockEntity>> {
+		let result = stock_entity::Entity::find()
+			.filter(stock_entity::Column::Symbol.eq(symbol))
+			.one(&*self.db)
+			.await
+			.unwrap();
 		Ok(result)
 	}
-	async fn buy_stock(&self) -> String {
-		"buy_stock service called".to_string()
+	async fn get_stock_order_list(&self) -> Result<Vec<StockOrderEntity>> {
+		let result = stock_order_entity::Entity::find()
+			.all(&*self.db)
+			.await?;
+		Ok(result)
 	}
-	async fn sell_stock(&self) -> String {
-		"sell_stock service called".to_string()
-	}
-}
-
-
-pub struct StockLoader {
-	locations: Arc<dyn StockServiceTrait> 
-}
-
-impl StockLoader {
-	pub fn new(locations: &Arc<dyn StockServiceTrait>) -> Self {
-		Self { locations: locations.clone() }
-	}
-}
-
-// #[async_trait]
-// impl Loader<String> for StockLoader {
-//     type Value = Stock;
-//     type Error = FieldError;
-
-//     async fn load(&self, keys: &[String]) -> Result<HashMap<String, Self::Value>, Self::Error> {
-//         let profiles = self.stocks.get_by_ids(keys.into()).await?;
+	async fn create_order(&self, order_input: StockOrderInput, order_type: &str) -> Result<StockOrderEntity, anyhow::Error> {
+		let order_model = StockOrderEntity::new(order_input.symbol, order_input.bid_price, order_input.bid_size, order_type.to_string());
 		
-//         Ok(profiles
-//             .into_iter()
-//             .map(|profile| (profile.id.clone(), profile))
-//             .collect());
-//     }
-// }
+		// send message through kafka
+		let raw_data = serde_json::to_string(&order_model).unwrap();
+		let topic = std::env::var("KAFKA_ORDER_TOPIC").expect("You've not set the kafka topic");
+		let delivery_result = use_producer(&topic, raw_data).await;
+		
+		match delivery_result {
+			Ok(value) => {
+				println!("value is {}", value.0);
+				Ok(order_model)
+			},
+			Err(_) => {
+				panic!("Kafka error occured!")			
+			}
+		}
+	}
+}

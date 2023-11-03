@@ -9,25 +9,21 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Stock::Table)
+                    .table(StockEntity::Table)
                     .if_not_exists()
-                    .col(
-                        ColumnDef::new(Stock::Id)
-                            .integer()
-                            .not_null()
-                            .auto_increment()
-                            .primary_key(),
-                    )
-                    .col(ColumnDef::new(Stock::Symbol).string().not_null())
-                    .col(ColumnDef::new(Stock::Exchange).string().not_null())
-                    .col(ColumnDef::new(Stock::CompanyName).string().not_null())
-                    .col(ColumnDef::new(Stock::StockType).string().not_null())
-                    .col(ColumnDef::new(Stock::IsNasdaqListed).boolean().default(false))
-                    .col(ColumnDef::new(Stock::IsNasdaq100).boolean().default(false))
-                    .col(ColumnDef::new(Stock::IsHeld).boolean().default(false))
-                    .col(ColumnDef::new(Stock::SecondaryData).string().not_null())
-                    .col(ColumnDef::new(Stock::MarketStatus).string().not_null())
-                    .col(ColumnDef::new(Stock::AssetClass).string().not_null())
+                    .col(ColumnDef::new(StockEntity::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(StockEntity::Symbol).string().not_null())
+                    .col(ColumnDef::new(StockEntity::Exchange).string().not_null())
+                    .col(ColumnDef::new(StockEntity::CompanyName).string().not_null())
+                    .col(ColumnDef::new(StockEntity::StockType).string().not_null())
+                    .col(ColumnDef::new(StockEntity::IsNasdaqListed).boolean().default(false))
+                    .col(ColumnDef::new(StockEntity::IsNasdaq100).boolean().default(false))
+                    .col(ColumnDef::new(StockEntity::IsHeld).boolean().default(false))
+                    .col(ColumnDef::new(StockEntity::SecondaryData).string().not_null())
+                    .col(ColumnDef::new(StockEntity::MarketStatus).string().not_null())
+                    .col(ColumnDef::new(StockEntity::AssetClass).string().not_null())
+                    .col(ColumnDef::new(StockEntity::CreatedAt).timestamp().not_null())
+                    .col(ColumnDef::new(StockEntity::DeletedAt).timestamp())
                     .to_owned(),
             )
             .await
@@ -35,13 +31,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Stock::Table).to_owned())
+            .drop_table(Table::drop().table(StockEntity::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Stock {
+enum StockEntity {
     Table,
     Id,
     Symbol,
@@ -53,5 +49,7 @@ enum Stock {
     IsHeld,
     SecondaryData,
     MarketStatus,
-    AssetClass
+    AssetClass,
+    CreatedAt,
+    DeletedAt
 }
